@@ -160,8 +160,9 @@ update
                 vars.Memory.Add(new MemoryWatcher<short>(new IntPtr((long)vars.BaseAddress + 0xC1B60)) { Name = "Area" });
                 vars.Memory.Add(new MemoryWatcher<int>(new IntPtr((long)vars.BaseAddress + 0xC1B1C)) { Name = "IGT" });
                 vars.Memory.Add(new MemoryWatcher<int>(new IntPtr((long)vars.BaseAddress + 0xC1B28)) { Name = "Clear Count" });
-                vars.Memory.Add(new MemoryWatcher<byte>(new IntPtr((long)vars.BaseAddress + 0xBE37A)) { Name = "Story Flag 1" });
-                vars.Memory.Add(new MemoryWatcher<byte>(new IntPtr((long)vars.BaseAddress + 0xBE382)) { Name = "Story Flag 2" });
+                vars.Memory.Add(new MemoryWatcher<short>(new IntPtr((long)vars.BaseAddress + 0xBE378)) { Name = "Story Flag 1" });
+                vars.Memory.Add(new MemoryWatcher<byte>(new IntPtr((long)vars.BaseAddress + 0xBE37A)) { Name = "Story Flag 2" });
+                vars.Memory.Add(new MemoryWatcher<byte>(new IntPtr((long)vars.BaseAddress + 0xBE382)) { Name = "Story Flag 3" });
 
                 vars.Memory.UpdateAll(game);
             }
@@ -174,8 +175,9 @@ update
                 vars.Memory.Add(new MemoryWatcher<short>(new IntPtr((long)vars.BaseAddress + 0xC1EB0)) { Name = "Area" });
                 vars.Memory.Add(new MemoryWatcher<int>(new IntPtr((long)vars.BaseAddress + 0xC1E6C)) { Name = "IGT" });
                 vars.Memory.Add(new MemoryWatcher<int>(new IntPtr((long)vars.BaseAddress + 0xC1E78)) { Name = "Clear Count" });
-                vars.Memory.Add(new MemoryWatcher<byte>(new IntPtr((long)vars.BaseAddress + 0xBE6CA)) { Name = "Story Flag 1" });
-                vars.Memory.Add(new MemoryWatcher<byte>(new IntPtr((long)vars.BaseAddress + 0xBE6D2)) { Name = "Story Flag 2" });
+                vars.Memory.Add(new MemoryWatcher<short>(new IntPtr((long)vars.BaseAddress + 0xBE6C8)) { Name = "Story Flag 1" });
+                vars.Memory.Add(new MemoryWatcher<byte>(new IntPtr((long)vars.BaseAddress + 0xBE6CA)) { Name = "Story Flag 2" });
+                vars.Memory.Add(new MemoryWatcher<byte>(new IntPtr((long)vars.BaseAddress + 0xBE6D2)) { Name = "Story Flag 3" });
                 
                 vars.Memory.UpdateAll(game);
             }
@@ -251,7 +253,7 @@ split
         return true;
     }
 
-    if (settings["snake_pit"] && vars.Memory["Area"].Old == 0x0009 && vars.Memory["Area"].Current == 0x0203) // leave the snake pit
+    if (settings["snake_pit"] && vars.Memory["Area"].Old == 0x0009 && vars.Memory["Area"].Current == 0x0203 && vars.Memory["Story Flag 1"].Current == 0x2E98) // leave the snake pit
     {
         return true;
     }
@@ -271,7 +273,7 @@ split
         return true;
     }
 
-    if (settings["marlwolf"] && vars.Memory["Area"].Current == 0x000A && vars.Memory["Story Flag 1"].Old == 0x01 && vars.Memory["Story Flag 1"].Current == 0x81) // beat marlwolf
+    if (settings["marlwolf"] && vars.Memory["Area"].Current == 0x000A && vars.Memory["Story Flag 2"].Old == 0x01 && vars.Memory["Story Flag 2"].Current == 0x81) // beat marlwolf
     {
         return true;
     }
@@ -301,7 +303,7 @@ split
         return true;
     }
 
-    if (settings["theodore_bruno"] && vars.Memory["Area"].Current == 0x0019 && vars.Memory["Story Flag 2"].Old == 0x5E && vars.Memory["Story Flag 2"].Current == 0x7E) // beat marlwolf
+    if (settings["theodore_bruno"] && vars.Memory["Area"].Current == 0x0019 && vars.Memory["Story Flag 3"].Old == 0x5E && vars.Memory["Story Flag 3"].Current == 0x7E) // beat marlwolf
     {
         return true;
     }

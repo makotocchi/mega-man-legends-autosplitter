@@ -14,6 +14,9 @@ startup
     settings.Add("split_settings", true, "Split Settings");
     settings.SetToolTip("split_settings", "Settings related to auto splitting");
 
+    settings.Add("reset_settings", true, "Reset Settings");
+    settings.SetToolTip("reset_settings", "Settings related to auto resetting");
+
     settings.CurrentDefaultParent = "timer_settings";
 
     settings.Add("igt_timer_start", true, "Start timer when IGT starts");
@@ -77,6 +80,11 @@ startup
 
     settings.Add("end", true, "End");
     settings.SetToolTip("end", "Split when you talk to Roll after beating Juno");
+
+    settings.CurrentDefaultParent = "reset_settings";
+
+    settings.Add("title_screen_reset", false, "Reset automatically in the title screen");
+    settings.SetToolTip("title_screen_reset", "Reset the timer automatically when you press start in the title screen");
 
     settings.CurrentDefaultParent = null;
 
@@ -240,6 +248,15 @@ start
     return vars.Memory["Area"].Current == 0x0000 && vars.Memory["IGT"].Current == 1;
 }
 
+reset
+{
+    if (settings["title_screen_reset"])
+    {
+        return vars.Memory["Area"].Old != 0x0000 && vars.Memory["Area"].Current == 0x0000;
+    }
+
+    return false;
+}
 
 split
 {

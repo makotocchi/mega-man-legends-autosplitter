@@ -39,7 +39,7 @@ startup
     settings.Add("snake_pit", true, "Snake Pit");
     settings.SetToolTip("snake_pit", "Split when you leave the ruins after the snake pit");
 
-    settings.Add("mine_skip", false, "Mine Skip");
+    settings.Add("mine_skip", false, "Mine Skip (Easy Any%)");
     settings.SetToolTip("mine_skip", "Split when you leave the ruins by doing mine skip");
 
     settings.Add("ferdinand", true, "Ferdinand");
@@ -51,17 +51,35 @@ startup
     settings.Add("marlwolf", true, "Marlwolf");
     settings.SetToolTip("marlwolf", "Split when you defeat Marlwolf");
 
-    settings.Add("cardon_ruins", true, "Cardon Ruins");
-    settings.SetToolTip("cardon_ruins", "Split when you clear Cardon Ruins");
+    settings.Add("cardon_ruins", true, "Cardon Forest Sub-Gate");
+    settings.SetToolTip("cardon_ruins", "Split when you clear Cardon Forest Sub-Gate");
+
+    settings.Add("cardon_hundo", false, "Cardon Forest Sub-Gate (100%)");
+    settings.SetToolTip("cardon_hundo", "Split when leaving Cardon Forest Sub-Gate after doing the Jump Springs skip");
+
+    settings.Add("bomb_mission", false, "Bomb Mission (100%)");
+    settings.SetToolTip("bomb_mission", "Split after completing the bomb mission");
+
+    settings.Add("minigames", false, "Minigames (100%)");
+    settings.SetToolTip("minigames", "Split when calling Roll after beating every minigame");
 
     settings.Add("balkon_gerat", true, "Balkon Gerat");
     settings.SetToolTip("balkon_gerat", "Split when you defeat Balkon Gerat");
 
-    settings.Add("jyun_ruins", true, "Jyun Ruins");
-    settings.SetToolTip("jyun_ruins", "Split when you clear Jyun Ruins");
+    settings.Add("jyun_ruins", true, "Lake Jyun Sub-Gate");
+    settings.SetToolTip("jyun_ruins", "Split when you clear Lake Jyun Sub-Gate");
 
-    settings.Add("clozer_ruins", true, "Clozer Ruins");
-    settings.SetToolTip("clozer_ruins", "Split when you clear Clozer Ruins");
+    settings.Add("jyun_hundo", false, "Lake Jyun Sub-Gate (100%)");
+    settings.SetToolTip("jyun_hundo", "Split after Lake Jyun Sub-Gate detour, exiting to Cardon Forest");
+
+    settings.Add("clozer_hundo", false, "Clozer Woods Sub-Gate Detour (100%)");
+    settings.SetToolTip("clozer_hundo", "Split after Clozer Woods Sub-Gate detour, exiting to Clozer Woods");
+
+    settings.Add("clozer_reentry", false, "Clozer Woods Sub-Gate Reentry (100%)");
+    settings.SetToolTip("clozer_reentry", "Split when entering Clozer Woods Sub-Gate again");
+
+    settings.Add("clozer_ruins", true, "Clozer Woods Sub-Gate");
+    settings.SetToolTip("clozer_ruins", "Split when you clear Clozer Woods Sub-Gate");
 
     settings.Add("focke_wulf", true, "Focke-Wulf");
     settings.SetToolTip("focke_wulf", "Split when you defeat Focke-Wulf");
@@ -69,14 +87,17 @@ startup
     settings.Add("theodore_bruno", true, "Theodore Bruno");
     settings.SetToolTip("theodore_bruno", "Split when you defeat Theodore Bruno");
 
-    settings.Add("uptown_subcity", true, "Uptown Subcity");
-    settings.SetToolTip("uptown_subcity", "Split when you clear Uptown Subcity");
+    settings.Add("uptown_subcity", true, "Uptown Sub-City");
+    settings.SetToolTip("uptown_subcity", "Split when you clear Uptown Sub-City");
 
-    settings.Add("downtown_subcity", true, "Downtown Subcity");
-    settings.SetToolTip("downtown_subcity", "Split when you clear Downtown Subcity");
+    settings.Add("downtown_subcity", true, "Downtown Sub-City");
+    settings.SetToolTip("downtown_subcity", "Split when you clear Downtown Sub-City");
 
-    settings.Add("old_town_subcity", true, "Old Town Subcity");
-    settings.SetToolTip("old_town_subcity", "Split when you clear Old Town Subcity");
+    settings.Add("old_town_subcity", true, "Old Town Sub-City");
+    settings.SetToolTip("old_town_subcity", "Split when you clear Old Town Sub-City");
+
+    settings.Add("side_content", false, "Side Content Complete (100%)");
+    settings.SetToolTip("side_content", "Split when entering the Main Gate after completing all side content");
 
     settings.Add("end", true, "End");
     settings.SetToolTip("end", "Split when you talk to Roll after beating Juno");
@@ -171,6 +192,7 @@ update
                 vars.Memory.Add(new MemoryWatcher<short>(new IntPtr((long)vars.BaseAddress + 0xBE378)) { Name = "Story Flag 1" });
                 vars.Memory.Add(new MemoryWatcher<byte>(new IntPtr((long)vars.BaseAddress + 0xBE37A)) { Name = "Story Flag 2" });
                 vars.Memory.Add(new MemoryWatcher<byte>(new IntPtr((long)vars.BaseAddress + 0xBE382)) { Name = "Story Flag 3" });
+                vars.Memory.Add(new MemoryWatcher<byte>(new IntPtr((long)vars.BaseAddress + 0xBE3B8)) { Name = "Sidequests Flag" });
 
                 vars.Memory.UpdateAll(game);
             }
@@ -186,6 +208,7 @@ update
                 vars.Memory.Add(new MemoryWatcher<short>(new IntPtr((long)vars.BaseAddress + 0xBE6C8)) { Name = "Story Flag 1" });
                 vars.Memory.Add(new MemoryWatcher<byte>(new IntPtr((long)vars.BaseAddress + 0xBE6CA)) { Name = "Story Flag 2" });
                 vars.Memory.Add(new MemoryWatcher<byte>(new IntPtr((long)vars.BaseAddress + 0xBE6D2)) { Name = "Story Flag 3" });
+                vars.Memory.Add(new MemoryWatcher<byte>(new IntPtr((long)vars.BaseAddress + 0xBE708)) { Name = "Sidequests Flag" });
                 
                 vars.Memory.UpdateAll(game);
             }
@@ -341,6 +364,43 @@ split
     }
 
     if (settings["end"] && vars.Memory["Clear Count"].Old + 1 == vars.Memory["Clear Count"].Current) // complete the game
+    {
+        return true;
+    }
+
+    // HUNDO SPLITS
+
+    if (settings["cardon_hundo"] && vars.Memory["Area"].Old == 0x000E && vars.Memory["Area"].Current == 0x0109) // leave cardon ruins by doing jump springs skip
+    {
+        return true;
+    }
+
+    if (settings["bomb_mission"] && vars.Memory["Sidequests Flag"].Current == 0x0A && vars.Memory["Area"].Old == 0x0005 && vars.Memory["Area"].Current == 0x0008) // complete the bomb mission and go to uptown
+    {
+        return true;
+    }
+    
+    if (settings["minigames"] && vars.Memory["Sidequests Flag"].Current == 0x7A && vars.Memory["Area"].Old == 0x0208 && vars.Memory["Area"].Current == 0x0008) // complete every minigame and call roll
+    {
+        return true;
+    }
+
+    if (settings["jyun_hundo"] && vars.Memory["Area"].Old == 0x0109 && vars.Memory["Area"].Current == 0x0003) // following conclusion of lake jyun detour, exiting to cardon forest
+    {
+        return true;
+    }
+    
+    if (settings["clozer_hundo"] && vars.Memory["Area"].Old == 0x0809 && vars.Memory["Area"].Current == 0x0011) // exit from detour outside clozer
+    {
+        return true;
+    }
+
+    if (settings["clozer_reentry"] && vars.Memory["Area"].Old == 0x0809 && vars.Memory["Area"].Current == 0x0913) // entrance back into clozer
+    {
+        return true;
+    }
+
+    if (settings["side_content"] && vars.Memory["Area"].Old == 0x0012 && vars.Memory["Area"].Current == 0x091A) // main gate entrance, all side content completed
     {
         return true;
     }

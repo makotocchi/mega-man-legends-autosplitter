@@ -99,6 +99,12 @@ startup
     settings.Add("side_content", false, "Side Content Complete (100%)");
     settings.SetToolTip("side_content", "Split when entering the Main Gate after completing all side content");
 
+    settings.Add("ryan", false, "Ryan");
+    settings.SetToolTip("ryan", "Split after leaving Ryan's room (the hippo after the triple doors in the Main Gate)");
+
+    settings.Add("final_data", false, "Last Save Point");
+    settings.SetToolTip("final_data", "Split just before Juno, after seeing Data for the last time");
+
     settings.Add("end", true, "End");
     settings.SetToolTip("end", "Split when you talk to Roll after beating Juno");
 
@@ -400,7 +406,17 @@ split
         return true;
     }
 
-    if (settings["side_content"] && vars.Memory["Area"].Old == 0x0012 && vars.Memory["Area"].Current == 0x091A) // main gate entrance, all side content completed
+    if (settings["side_content"] && vars.Memory["Area"].Old == 0x0012 && vars.Memory["Area"].Current == 0x091A && vars.Memory["Story Flag 3"].Current == 0x76) // main gate entrance, all side content completed
+    {
+        return true;
+    }
+
+    if (settings["ryan"] && vars.Memory["Area"].Old == 0x011A && vars.Memory["Area"].Current == 0x021A) // split after ryan's room
+    {
+        return true;
+    }
+
+    if (settings["final_data"] && vars.Memory["Area"].Old == 0x021A && vars.Memory["Area"].Current == 0x0F1A) // split just before juno
     {
         return true;
     }

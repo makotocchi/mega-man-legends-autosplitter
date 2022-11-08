@@ -349,7 +349,7 @@ split
         return true;
     }
 
-    if (settings["theodore_bruno"] && vars.Memory["Area"].Current == 0x0019 && vars.Memory["Story Flag 3"].Old == 0x5E && vars.Memory["Story Flag 3"].Current == 0x7E) // beat marlwolf
+    if (settings["theodore_bruno"] && vars.Memory["Area"].Current == 0x0019 && (vars.Memory["Story Flag 3"].Old & 0x20) == 0x0 && (vars.Memory["Story Flag 3"].Current & 0x20) == 0x20) // beat bruno
     {
         return true;
     }
@@ -369,7 +369,7 @@ split
         return true;
     }
 
-    if (settings["end"] && vars.Memory["Clear Count"].Old + 1 == vars.Memory["Clear Count"].Current) // complete the game
+    if (settings["end"] && vars.Memory["Area"].Current == 0x011B && vars.Memory["Clear Count"].Old < vars.Memory["Clear Count"].Current) // complete the game
     {
         return true;
     }
